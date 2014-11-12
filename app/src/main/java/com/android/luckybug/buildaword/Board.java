@@ -10,11 +10,13 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.android.luckybug.buildaword.Logic.Dictionary;
+import com.android.luckybug.buildaword.Logic.Prison;
 
 
 public class Board extends Activity {
 
     Dictionary dictionary;
+    Prison prison;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,7 @@ public class Board extends Activity {
         setContentView(R.layout.activity_board);
 
         dictionary = new Dictionary(this);
+        prison = new Prison();
 
         final EditText editText = (EditText)findViewById(R.id.editText);
 
