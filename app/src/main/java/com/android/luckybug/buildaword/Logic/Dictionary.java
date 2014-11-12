@@ -19,7 +19,7 @@ public class Dictionary {
         words.addAll(Arrays.asList(context.getResources().getStringArray(R.array.words)));
     }
 
-    public boolean isIn(String word) {
-        return words.contains(word);
+    public boolean contains(String word) {
+        return words.contains(word.toLowerCase());
     }
 }

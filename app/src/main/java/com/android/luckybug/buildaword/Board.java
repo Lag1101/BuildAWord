@@ -1,10 +1,13 @@
 package com.android.luckybug.buildaword;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.EditText;
 
 import com.android.luckybug.buildaword.Logic.Dictionary;
 
@@ -20,7 +23,29 @@ public class Board extends Activity {
 
         dictionary = new Dictionary(this);
 
-        Toast.makeText(this, "Loaded", Toast.LENGTH_SHORT).show();
+        final EditText editText = (EditText)findViewById(R.id.editText);
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if( dictionary.contains(s.toString()) ) {
+                    editText.setBackgroundColor(Color.GREEN);
+                } else {
+                    editText.setBackgroundColor(Color.RED);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
 
