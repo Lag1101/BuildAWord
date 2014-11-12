@@ -4,14 +4,23 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.android.luckybug.buildaword.Logic.Dictionary;
 
 
 public class Board extends Activity {
+
+    Dictionary dictionary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
+
+        dictionary = new Dictionary(this);
+
+        Toast.makeText(this, "Loaded", Toast.LENGTH_SHORT).show();
     }
 
 
