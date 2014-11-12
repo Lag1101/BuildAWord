@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.android.luckybug.buildaword.R;
 
+import java.util.Arrays;
 import java.util.HashSet;
 
 /**
@@ -11,12 +12,11 @@ import java.util.HashSet;
  */
 public class Dictionary {
 
-    HashSet words;
+    HashSet<String> words;
 
     public Dictionary(Context context) {
-        words = new HashSet();
-        for(String word : context.getResources().getStringArray(R.array.words))
-            words.add(word);
+        words = new HashSet<String>();
+        words.addAll(Arrays.asList(context.getResources().getStringArray(R.array.words)));
     }
 
     public boolean isIn(String word) {
