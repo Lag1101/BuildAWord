@@ -22,3 +22,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+dependencies {
+    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
+}

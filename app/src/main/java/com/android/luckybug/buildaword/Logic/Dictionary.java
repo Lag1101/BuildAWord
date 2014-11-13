@@ -1,8 +1,13 @@
 package com.android.luckybug.buildaword.Logic;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.widget.Toast;
 
 import com.android.luckybug.buildaword.R;
+import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,14 +17,22 @@ import java.util.HashSet;
  */
 public class Dictionary {
 
-    HashSet<String> words;
+    SQLiteAssetHelper dbOpenHelper;
+    SQLiteDatabase db;
 
     public Dictionary(Context context) {
-        words = new HashSet<String>();
-        words.addAll(Arrays.asList(context.getResources().getStringArray(R.array.words)));
+
+        dbOpenHelper = new SQLiteAssetHelper(context, "dictionary.db", null, 1);
+
+        db = dbOpenHelper.getReadableDatabase();
     }
 
     public boolean contains(String word) {
-        return words.contains(word.toLowerCase());
+        Cursor c = db.rawQuery("SELECT word FROM words WHERE word='" + word + "'", null);
+
+        c.moveToFirst();
+        int count = c.getCount();
+
+        return count > 0;
     }
 }
