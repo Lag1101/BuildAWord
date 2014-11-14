@@ -12,8 +12,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:inputType="textCapWords"
-        android:autoText="false"
         android:textSize="40sp"
         android:textAlignment="center" />
 
