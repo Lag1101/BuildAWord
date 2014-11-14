@@ -8,9 +8,13 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.android.luckybug.buildaword.Logic.Dictionary;
-import com.android.luckybug.buildaword.Logic.Prison;
+import com.android.luckybug.buildaword.Conrtol.Prison;
 
 
 public class Board extends Activity {
@@ -24,9 +28,16 @@ public class Board extends Activity {
         setContentView(R.layout.activity_board);
 
         dictionary = new Dictionary(this);
-        prison = new Prison();
+        prison = new Prison((TableLayout)findViewById(R.id.grid));
 
-        final EditText editText = (EditText)findViewById(R.id.editText);
+        final TextView editText = (TextView)findViewById(R.id.textLabel);
+
+        prison.onTextChange(new Prison.Callback() {
+            @Override
+            public void callback(String text) {
+                editText.setText(text);
+            }
+        });
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override

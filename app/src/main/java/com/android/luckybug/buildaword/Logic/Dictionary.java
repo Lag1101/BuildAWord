@@ -28,7 +28,7 @@ public class Dictionary {
     }
 
     public boolean contains(String word) {
-        Cursor c = db.rawQuery("SELECT word FROM words WHERE word='" + word + "'", null);
+        Cursor c = db.rawQuery("SELECT word FROM words WHERE word='" + word.toLowerCase() + "'", null);
 
         c.moveToFirst();
         int count = c.getCount();
