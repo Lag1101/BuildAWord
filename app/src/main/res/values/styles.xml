@@ -6,8 +6,10 @@
     </style>
 
     <style name="CellStyle">
+        <item name="android:background">@drawable/btn_toggle_bg</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">2dp</item>
         <item name="android:textOff"></item>
         <item name="android:textOn"></item>
         <item name="android:minHeight">10dp</item>
