@@ -7,6 +7,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -57,6 +59,15 @@ public class Board extends Activity {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        Button eraseBtn = (Button)findViewById(R.id.erase);
+
+        eraseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                prison.erase();
             }
         });
 

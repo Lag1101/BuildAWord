@@ -88,4 +88,14 @@ public class Prison {
             }
         }
     }
+    public void erase() {
+        for(int index : sequence) {
+            int x = index % cols;
+            int y = index / cols;
+
+            cells[y][x].setOff();
+        }
+        sequence.clear();
+        onTextChange();
+    }
 }

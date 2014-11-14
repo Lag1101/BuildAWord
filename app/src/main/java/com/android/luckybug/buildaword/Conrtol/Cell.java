@@ -7,6 +7,7 @@ public interface Cell {
     public interface Callback {
         public void callback(Cell cell);
     }
+    public void setOff();
     public boolean pushed();
     public void onClick(final Callback listener);
     public String getText();

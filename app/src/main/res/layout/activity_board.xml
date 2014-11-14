@@ -10,10 +10,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/textLabel"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
         android:textSize="40sp"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:layout_alignEnd="@+id/grid"
+        android:layout_toEndOf="@+id/erase" />
 
     <include
         android:id="@+id/grid"
@@ -22,5 +22,14 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+
+    <Button
+       style="@style/RoundBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="x"
+        android:id="@+id/erase"
+        android:layout_alignBottom="@+id/textLabel"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

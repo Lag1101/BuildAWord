@@ -15,6 +15,11 @@ public class CellToggle implements Cell {
     }
 
     @Override
+    public void setOff() {
+        toggleButton.setChecked(false);
+    }
+
+    @Override
     public boolean pushed() {
         return toggleButton.isChecked();
     }
