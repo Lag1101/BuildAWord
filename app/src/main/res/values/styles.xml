@@ -7,8 +7,6 @@
 
     <style name="CellStyle">
         <item name="android:background">@drawable/btn_toggle</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">2dp</item>
         <item name="android:textOff">Off</item>
         <item name="android:textOn">On</item>
@@ -20,6 +18,7 @@
     </style>
     <style name="RoundBtn">
         <item name="android:background">@drawable/btn_cancel</item>
+        <item name="android:layout_margin">2dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:minHeight">10dp</item>
         <item name="android:minWidth">10dp</item>
