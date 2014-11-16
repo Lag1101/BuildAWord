@@ -4,6 +4,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.ToggleButton;
 
+import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
+import com.android.luckybug.buildaword.Conrtol.Cell.CellToggle;
+
 import java.util.ArrayList;
 import java.util.List;
 

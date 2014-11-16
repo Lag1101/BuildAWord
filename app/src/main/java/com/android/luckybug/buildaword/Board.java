@@ -2,6 +2,7 @@ package com.android.luckybug.buildaword;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,20 +10,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Conrtol.Prison;
+import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
 
 
 public class Board extends Activity {
 
     Dictionary dictionary;
     Prison prison;
+    MyHttpClient client = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +71,21 @@ public class Board extends Activity {
             }
         });
 
+        Button connectBtn = (Button)findViewById(R.id.connectBtn);
+
+        connectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if( client == null) {
+                    client = new MyHttpClient();
+                }
+                if( client.getStatus() != AsyncTask.Status.RUNNING )
+                {
+                    client = new MyHttpClient();
+                    client.execute();
+                }
+            }
+        });
     }
 
 

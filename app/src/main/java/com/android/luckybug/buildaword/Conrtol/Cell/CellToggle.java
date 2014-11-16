@@ -1,4 +1,4 @@
-package com.android.luckybug.buildaword.Conrtol;
+package com.android.luckybug.buildaword.Conrtol.Cell;
 
 import android.view.View;
 import android.widget.ToggleButton;

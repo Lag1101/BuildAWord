@@ -1,4 +1,4 @@
-package com.android.luckybug.buildaword.Conrtol;
+package com.android.luckybug.buildaword.Conrtol.Cell;
 
 /**
  * Created by vasiliy.lomanov on 14.11.2014.
