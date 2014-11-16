@@ -3,6 +3,7 @@ package com.android.luckybug.buildaword.Logic.Exchange;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
@@ -18,12 +19,12 @@ import java.util.List;
 /**
  * Created by luckybug on 16.11.14.
  */
-public class MyHttpClient extends AsyncTask<Void, Void, Void> {
+public class MyHttpClient extends AsyncTask<String, Void, Void> {
 
-    static final String url = "http://192.168.1.106:3003/";
+    static final String url = "http://192.168.1.102:3000/";
 
 
-    public void send()
+    public void send(String msg)
     {
         try {
             //создаем запрос на сервер
@@ -34,7 +35,7 @@ public class MyHttpClient extends AsyncTask<Void, Void, Void> {
             //будем передавать два параметра
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             //передаем параметры из наших текстбоксов
-            nameValuePairs.add(new BasicNameValuePair("hello", "world"));
+            nameValuePairs.add(new BasicNameValuePair("word", msg));
             //собераем их вместе и посылаем на сервер
             postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             //получаем ответ от сервера
@@ -46,10 +47,11 @@ public class MyHttpClient extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
-        send();
+    protected Void doInBackground(String... strings) {
+        send(strings[0]);
         return null;
     }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();

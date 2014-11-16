@@ -17,6 +17,8 @@ import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Conrtol.Prison;
 import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
 
+import java.util.Arrays;
+
 
 public class Board extends Activity {
 
@@ -82,7 +84,7 @@ public class Board extends Activity {
                 if( client.getStatus() != AsyncTask.Status.RUNNING )
                 {
                     client = new MyHttpClient();
-                    client.execute();
+                    client.execute(Arrays.toString( prison.getSequence().toArray() ));
                 }
             }
         });

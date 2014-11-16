@@ -72,17 +72,27 @@ public class Prison {
     void onTextChange() {
         if(textChangeListener != null) {
 
-            String text = "";
-            for(int index : sequence) {
-                int x = index % cols;
-                int y = index / cols;
 
-                text += cells[y][x].getText();
-            }
 
-            textChangeListener.callback(text);
+            textChangeListener.callback(buildText());
         }
     }
+
+    public List<Integer> getSequence() {
+        return sequence;
+    }
+
+    public String buildText() {
+        String text = "";
+        for(int index : sequence) {
+            int x = index % cols;
+            int y = index / cols;
+
+            text += cells[y][x].getText();
+        }
+        return text;
+    }
+
     void generate() {
         for( int y = 0; y < rows; y++ ) {
             for( int x = 0; x < cols; x++ ) {
