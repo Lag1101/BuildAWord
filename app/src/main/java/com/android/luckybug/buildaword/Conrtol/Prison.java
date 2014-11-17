@@ -1,5 +1,6 @@
 package com.android.luckybug.buildaword.Conrtol;
 
+import android.graphics.Point;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.ToggleButton;
@@ -7,6 +8,7 @@ import android.widget.ToggleButton;
 import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
 import com.android.luckybug.buildaword.Conrtol.Cell.CellToggle;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +68,13 @@ public class Prison {
 
         generate();
     }
+
+    public void setCellsOwner(Point[] points, Cell.Owner owner) {
+        for(Point p : points) {
+            cells[p.y][p.x].setOwner(owner);
+        }
+    }
+
     public void onTextChange(Callback callback) {
         textChangeListener = callback;
     }
