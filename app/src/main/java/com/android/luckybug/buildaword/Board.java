@@ -1,6 +1,7 @@
 package com.android.luckybug.buildaword;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,9 +13,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Conrtol.Prison;
+import com.android.luckybug.buildaword.Logic.Exchange.Client;
 import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
 
 import java.util.Arrays;
@@ -78,13 +81,18 @@ public class Board extends Activity {
         connectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if( client == null) {
+                if (client == null) {
                     client = new MyHttpClient();
                 }
-                if( client.getStatus() != AsyncTask.Status.RUNNING )
-                {
+                if (client.getStatus() != AsyncTask.Status.RUNNING) {
                     client = new MyHttpClient();
-                    client.execute(Arrays.toString( prison.getSequence().toArray() ));
+                    client.setOnPostExecute(new Client.Callback() {
+                        @Override
+                        public void callback(String response) {
+                            Toast.makeText(getApplicationContext (), response + " sent", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    client.execute(Arrays.toString(prison.getSequence().toArray()));
                 }
             }
         });

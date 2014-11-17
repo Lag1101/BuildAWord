@@ -5,7 +5,7 @@ package com.android.luckybug.buildaword.Logic.Exchange;
  */
 public interface Client {
     public interface Callback{
-        public void callback();
+        public void callback(String response);
     }
     public void send();
     public void onReceive();

@@ -19,13 +19,18 @@ import java.util.List;
 /**
  * Created by luckybug on 16.11.14.
  */
-public class MyHttpClient extends AsyncTask<String, Void, Void> {
+public class MyHttpClient extends AsyncTask<String, String, String> {
 
-    static final String url = "http://192.168.1.102:3000/";
+    static final String url = "http://91.219.165.141:3000/";
+    Client.Callback onPostExecuteCallback = null;
 
+    public void setOnPostExecute(Client.Callback callback) {
+        onPostExecuteCallback = callback;
+    }
 
-    public void send(String msg)
+    public String send(String msg)
     {
+        String response = "";
         try {
             //создаем запрос на сервер
             DefaultHttpClient hc = new DefaultHttpClient();
@@ -39,17 +44,17 @@ public class MyHttpClient extends AsyncTask<String, Void, Void> {
             //собераем их вместе и посылаем на сервер
             postMethod.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             //получаем ответ от сервера
-            String response = hc.execute(postMethod, res);
+            response = hc.execute(postMethod, res);
             Log.d("client", response);
         } catch (Exception e) {
             Log.d("client", e.getMessage());
         }
+        return response;
     }
 
     @Override
-    protected Void doInBackground(String... strings) {
-        send(strings[0]);
-        return null;
+    protected String doInBackground(String... strings) {
+        return send(strings[0]);
     }
 
     @Override
@@ -58,8 +63,9 @@ public class MyHttpClient extends AsyncTask<String, Void, Void> {
         //Log.d("client", "try to send...");
     }
     @Override
-    protected void onPostExecute(Void v) {
-        super.onPreExecute();
+    protected void onPostExecute(String response) {
+        super.onPostExecute(response);
+        onPostExecuteCallback.callback(response);
         Log.d("client", "Sent");
     }
 
