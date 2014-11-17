@@ -69,6 +69,17 @@ public class Prison {
         generate();
     }
 
+    public void calcEnable() {
+        for( int y = 0; y < rows; y++ ) for (int x = 0; x < cols; x++) {
+            boolean nearToControlled = false;
+            for( int j = Math.max(0, y-1); j <= Math.min(rows-1, y+1); j++ )
+                for( int i = Math.max(0, x-1); i <= Math.min(cols-1, x+1); i++ )
+                    nearToControlled |= (cells[j][i].getOwner() == Cell.Owner.me);
+
+            cells[y][x].setEnable(nearToControlled);
+        }
+    }
+
     public void setCellsOwner(Point[] points, Cell.Owner owner) {
         for(Point p : points) {
             cells[p.y][p.x].setOwner(owner);
@@ -81,9 +92,6 @@ public class Prison {
 
     void onTextChange() {
         if(textChangeListener != null) {
-
-
-
             textChangeListener.callback(buildText());
         }
     }

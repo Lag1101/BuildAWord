@@ -114,6 +114,7 @@ public class Board extends Activity {
                 new Point(4,3),
                 new Point(4,4)
         }, Cell.Owner.enemy);
+        prison.calcEnable();
     }
 
 

@@ -18,9 +18,17 @@ public class CellToggle extends Cell {
     }
 
     @Override
+    public void setEnable(boolean enable) {
+        toggleButton.setEnabled(enable);
+        toggleButton.setAlpha( enable ? 1.f : 0.5f );
+    }
+
+    @Override
     public void setOff() {
         toggleButton.setChecked(false);
     }
+
+
 
     @Override
     public boolean pushed() {
@@ -38,7 +46,10 @@ public class CellToggle extends Cell {
         toggleButton.setTextOff(text);
         toggleButton.setTextOn(text);
     }
-
+    @Override
+    public Owner getOwner() {
+        return owner;
+    }
     @Override
     public void setOwner(Owner own) {
         owner = own;
