@@ -1,6 +1,7 @@
 package com.android.luckybug.buildaword.Conrtol;
 
 import android.graphics.Point;
+import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.ToggleButton;
@@ -80,10 +81,24 @@ public class Prison {
         }
     }
 
-    public void setCellsOwner(Point[] points, Cell.Owner owner) {
+    public Prison setCellsOwner(List<Point> points, Cell.Owner owner) {
         for(Point p : points) {
             cells[p.y][p.x].setOwner(owner);
         }
+        return this;
+    }
+
+    public Prison setCellsOwner() {
+        List<Point> points = new ArrayList<Point>();
+        for(int index : sequence) {
+            int x = index % cols;
+            int y = index / cols;
+            points.add(new Point(x, y));
+        }
+        setCellsOwner(points, Cell.Owner.me);
+        erase();
+
+        return this;
     }
 
     public void onTextChange(Callback callback) {
@@ -100,7 +115,25 @@ public class Prison {
         return sequence;
     }
 
-    String buildText() {
+    public void buildSequence(String text) {
+
+        erase();
+        String strs[] = text.split(",");
+        for( String str : strs ) {
+
+            String res = "";
+
+            for (char ch : str.toCharArray()) {
+                if ( Character.isDigit(ch) ) {
+                    res += ch;
+                }
+            }
+
+            sequence.add(Integer.parseInt(res));
+        }
+    }
+
+    public String buildText() {
         String text = "";
         for(int index : sequence) {
             int x = index % cols;
@@ -119,6 +152,7 @@ public class Prison {
             }
         }
     }
+
     public void erase() {
         for(int index : sequence) {
             int x = index % cols;

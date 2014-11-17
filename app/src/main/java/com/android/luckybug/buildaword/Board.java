@@ -23,6 +23,7 @@ import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class Board extends Activity {
@@ -83,38 +84,48 @@ public class Board extends Activity {
         connectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (client == null) {
-                    client = new MyHttpClient();
-                }
-                if (client.getStatus() != AsyncTask.Status.RUNNING) {
-                    client = new MyHttpClient();
-                    client.setOnPostExecute(new Client.Callback() {
-                        @Override
-                        public void callback(String response) {
-                            Toast.makeText(getApplicationContext (), response + " sent", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    client.execute(Arrays.toString(prison.getSequence().toArray()));
+                if( dictionary.contains(editText.getText().toString()) ) {
+                    if (client == null) {
+                        client = new MyHttpClient();
+                    }
+                    if (client.getStatus() != AsyncTask.Status.RUNNING) {
+                        client = new MyHttpClient();
+                        client.setOnPostExecute(new Client.Callback() {
+                            @Override
+                            public void callback(String response) {
+
+                                Toast.makeText(getApplicationContext(), response + " sent", Toast.LENGTH_SHORT).show();
+
+                                prison.buildSequence(response);
+                                prison.setCellsOwner();
+                                prison.calcEnable();
+                            }
+                        });
+                        client.execute(Arrays.toString(prison.getSequence().toArray()));
+                    }
                 }
             }
         });
 
+        List<Point> myCells = new ArrayList<Point>();
+        List<Point> enemyCells = new ArrayList<Point>();
 
-        prison.setCellsOwner(new Point[]{
-                new Point(0,0),
-                new Point(0,1),
-                new Point(0,2),
-                new Point(0,3),
-                new Point(0,4)
-        }, Cell.Owner.me);
-        prison.setCellsOwner(new Point[]{
-                new Point(4,0),
-                new Point(4,1),
-                new Point(4,2),
-                new Point(4,3),
-                new Point(4,4)
-        }, Cell.Owner.enemy);
-        prison.calcEnable();
+        myCells.add(new Point(0,0));
+        myCells.add(new Point(0,1));
+        myCells.add(new Point(0,2));
+        myCells.add(new Point(0,3));
+        myCells.add(new Point(0,4));
+
+        enemyCells.add(new Point(4,0));
+        enemyCells.add(new Point(4,1));
+        enemyCells.add(new Point(4,2));
+        enemyCells.add(new Point(4,3));
+        enemyCells.add(new Point(4,4));
+
+        prison
+                .setCellsOwner(myCells, Cell.Owner.me)
+                .setCellsOwner(enemyCells, Cell.Owner.enemy)
+                .calcEnable();
     }
 
 

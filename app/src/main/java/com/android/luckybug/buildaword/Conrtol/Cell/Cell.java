@@ -8,6 +8,7 @@ public abstract class Cell {
     public interface Callback {
         public void callback(Cell cell);
     }
+    public abstract void engage();
     public abstract Owner getOwner();
     public abstract void setEnable(boolean enable);
     public abstract void setOff();

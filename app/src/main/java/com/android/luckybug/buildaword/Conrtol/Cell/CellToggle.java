@@ -50,8 +50,19 @@ public class CellToggle extends Cell {
     public Owner getOwner() {
         return owner;
     }
+
+    @Override
+    public void engage() {
+        if( owner == Owner.enemy ) {
+            setOwner(Owner.nobody);
+        } else if( owner == Owner.nobody ) {
+            setOwner(Owner.me);
+        }
+    }
+
     @Override
     public void setOwner(Owner own) {
+
         owner = own;
         switch (owner) {
             case me: {
