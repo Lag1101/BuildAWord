@@ -1,7 +1,7 @@
 package com.android.luckybug.buildaword.Conrtol.Cell;
 
 /**
- * Created by vasiliy.lomanov on 14.11.2014.
+ * Created by vasiliy.lomanov on 14.11.2014. Have a lot of fun!(c)
  */
 public interface Cell {
     public interface Callback {

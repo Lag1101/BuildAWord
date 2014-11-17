@@ -11,16 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by vasiliy.lomanov on 12.11.2014.
+ * Created by vasiliy.lomanov on 12.11.2014. Have a lot of fun!(c)
  */
 public class Prison {
 
-    static String alphabet = "абвгдеёжзийклмнопрстуфхцчъыьэюя".toUpperCase();
+    private static final String alphabet = "абвгдеёжзийклмнопрстуфхцчъыьэюя".toUpperCase();
 
-    int cols, rows;
-    Cell cells[][];
-    List<Integer> sequence;
-    Callback textChangeListener;
+    private final int cols;
+    private final int rows;
+    private final Cell[][] cells;
+    private final List<Integer> sequence;
+    private Callback textChangeListener;
 
 
     public interface Callback{
@@ -82,7 +83,7 @@ public class Prison {
         return sequence;
     }
 
-    public String buildText() {
+    String buildText() {
         String text = "";
         for(int index : sequence) {
             int x = index % cols;

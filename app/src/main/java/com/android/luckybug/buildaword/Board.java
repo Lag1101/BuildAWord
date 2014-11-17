@@ -1,7 +1,6 @@
 package com.android.luckybug.buildaword;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,9 +24,9 @@ import java.util.Arrays;
 
 public class Board extends Activity {
 
-    Dictionary dictionary;
-    Prison prison;
-    MyHttpClient client = null;
+    private Dictionary dictionary;
+    private Prison prison;
+    private MyHttpClient client = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

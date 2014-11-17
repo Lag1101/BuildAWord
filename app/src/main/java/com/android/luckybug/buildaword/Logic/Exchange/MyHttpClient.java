@@ -1,9 +1,7 @@
 package com.android.luckybug.buildaword.Logic.Exchange;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
@@ -17,18 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by luckybug on 16.11.14.
+ * Created by luckybug on 16.11.14. Have a lot of fun!(c)
  */
 public class MyHttpClient extends AsyncTask<String, String, String> {
 
-    static final String url = "http://91.219.165.141:3000/";
-    Client.Callback onPostExecuteCallback = null;
+    private static final String url = "http://91.219.165.141:3000/";
+    private Client.Callback onPostExecuteCallback = null;
 
     public void setOnPostExecute(Client.Callback callback) {
         onPostExecuteCallback = callback;
     }
 
-    public String send(String msg)
+    String send(String msg)
     {
         String response = "";
         try {
@@ -57,11 +55,6 @@ public class MyHttpClient extends AsyncTask<String, String, String> {
         return send(strings[0]);
     }
 
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        //Log.d("client", "try to send...");
-    }
     @Override
     protected void onPostExecute(String response) {
         super.onPostExecute(response);

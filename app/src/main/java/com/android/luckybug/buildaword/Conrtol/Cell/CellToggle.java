@@ -4,11 +4,11 @@ import android.view.View;
 import android.widget.ToggleButton;
 
 /**
- * Created by vasiliy.lomanov on 14.11.2014.
+ * Created by vasiliy.lomanov on 14.11.2014. Have a lot of fun!(c)
  */
 public class CellToggle implements Cell {
 
-    ToggleButton toggleButton;
+    private final ToggleButton toggleButton;
 
     public CellToggle(ToggleButton tb) {
         toggleButton = tb;
