@@ -52,12 +52,13 @@ public class CellToggle extends Cell {
     }
 
     @Override
-    public void engage() {
-        if( owner == Owner.enemy ) {
+    public void engage(Owner newOwner) {
+
+        if( owner != Owner.nobody && newOwner != owner ) {
             setOwner(Owner.nobody);
         } else if( owner == Owner.nobody ) {
-            setOwner(Owner.me);
-        }
+            setOwner(newOwner);
+        } else {/* if( newOwner == owner )*/}
     }
 
     @Override

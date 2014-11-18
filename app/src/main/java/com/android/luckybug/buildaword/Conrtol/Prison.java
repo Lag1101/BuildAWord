@@ -83,7 +83,7 @@ public class Prison {
 
     public Prison setCellsOwner(List<Point> points, Cell.Owner owner) {
         for(Point p : points) {
-            cells[p.y][p.x].setOwner(owner);
+            cells[p.y][p.x].engage(owner);
         }
         return this;
     }
