@@ -3,7 +3,7 @@
     package="com.android.luckybug.buildaword" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-    
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -12,6 +12,10 @@
         <activity
             android:name="com.android.luckybug.buildaword.Board"
             android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.android.luckybug.buildaword.MainActivity"
+            android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
