@@ -10,5 +10,10 @@
     <string name="classic_loc">Классика</string>
     <string name="arcade_loc">Аркада</string>
     <string name="hard_loc">Строгий</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="post_game_screen_status_text">Status</string>
+    <string name="post_game_screen_winner_text">Winner</string>
+    <string name="post_game_screen_comment_text">Comments</string>
+    <string name="avatar_description">avatar image</string>
 
 </resources>

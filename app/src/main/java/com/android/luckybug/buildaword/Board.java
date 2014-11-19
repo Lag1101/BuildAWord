@@ -1,9 +1,11 @@
 package com.android.luckybug.buildaword;
 
-import android.app.Activity;
+import android.app.DialogFragment;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -22,11 +24,12 @@ import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
 import java.util.Arrays;
 
 
-public class Board extends Activity {
+public class Board extends FragmentActivity {
 
     private Dictionary dictionary;
     private Prison prison;
     private MyHttpClient client = null;
+    FragmentManager fm = getFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,11 +124,21 @@ public class Board extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        switch (id) {
+            case R.id.win: {
+                DialogFragment fragment = PostGameFragment.newInstance("p1", "p2");
+                fragment.show(fm, "win");
+                return true;
+            }
+            case R.id.lose: {
 
-        return super.onOptionsItemSelected(item);
+                return true;
+            }
+            case R.id.action_settings: {
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
