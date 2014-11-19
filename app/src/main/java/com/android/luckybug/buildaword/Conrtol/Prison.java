@@ -1,15 +1,15 @@
 package com.android.luckybug.buildaword.Conrtol;
 
 import android.graphics.Point;
-import android.util.Log;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
 import com.android.luckybug.buildaword.Conrtol.Cell.CellToggle;
+import com.android.luckybug.buildaword.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +43,9 @@ public class Prison {
         for( int y = 0; y < rows; y++ ) {
             TableRow row = (TableRow)tl.getChildAt(y);
             for( int x = 0; x < cols; x++ ) {
-                ToggleButton tb = (ToggleButton)row.getChildAt(x);
-                cells[y][x] = new CellToggle(tb);
+                ToggleButton tb = (ToggleButton)row.getChildAt(x).findViewById(R.id.toggleButton);
+                TextView tv = (TextView)row.getChildAt(x).findViewById(R.id.textLabel);
+                cells[y][x] = new CellToggle(tb, tv);
             }
         }
 
@@ -66,6 +67,26 @@ public class Prison {
                 });
             }
         }
+
+
+        List<Point> myCells = new ArrayList<Point>();
+        List<Point> enemyCells = new ArrayList<Point>();
+
+        myCells.add(new Point(0,0));
+        myCells.add(new Point(0,1));
+        myCells.add(new Point(0,2));
+        myCells.add(new Point(0,3));
+        myCells.add(new Point(0,4));
+
+        enemyCells.add(new Point(4,0));
+        enemyCells.add(new Point(4,1));
+        enemyCells.add(new Point(4,2));
+        enemyCells.add(new Point(4,3));
+        enemyCells.add(new Point(4,4));
+
+        setCellsOwner(myCells, Cell.Owner.me);
+        setCellsOwner(enemyCells, Cell.Owner.enemy);
+        calcEnable();
 
         generate();
     }
@@ -129,7 +150,8 @@ public class Prison {
                 }
             }
 
-            sequence.add(Integer.parseInt(res));
+            if(!res.equals(""))
+                sequence.add(Integer.parseInt(res));
         }
     }
 
@@ -149,6 +171,11 @@ public class Prison {
             for( int x = 0; x < cols; x++ ) {
                 int index = (int)(Math.random() * alphabet.length());
                 cells[y][x].setText( Character.toString( alphabet.charAt(index) ) );
+
+                if(cells[y][x].getOwner() != Cell.Owner.nobody)
+                    cells[y][x].setPoints(5);
+                else
+                    cells[y][x].setPoints(1);
             }
         }
     }

@@ -1,2 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ToggleButton style="@style/CellStyle" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content">
+
+    <ToggleButton
+        style="@style/CellStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/toggleButton" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:tag="text"
+        android:text="0"
+        android:id="@+id/textLabel"
+        android:layout_alignTop="@+id/toggleButton"
+        android:layout_alignStart="@+id/toggleButton" />
+</RelativeLayout>

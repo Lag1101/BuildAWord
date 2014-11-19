@@ -1,6 +1,7 @@
 package com.android.luckybug.buildaword.Conrtol.Cell;
 
 import android.view.View;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.android.luckybug.buildaword.R;
@@ -11,9 +12,11 @@ import com.android.luckybug.buildaword.R;
 public class CellToggle extends Cell {
 
     private final ToggleButton toggleButton;
+    private final TextView textView;
 
-    public CellToggle(ToggleButton tb) {
+    public CellToggle(ToggleButton tb, TextView tv) {
         toggleButton = tb;
+        textView = tv;
         setOwner(Owner.nobody);
     }
 
@@ -55,10 +58,13 @@ public class CellToggle extends Cell {
     public void engage(Owner newOwner) {
 
         if( owner != Owner.nobody && newOwner != owner ) {
+            setPoints(1);
             setOwner(Owner.nobody);
         } else if( owner == Owner.nobody ) {
             setOwner(newOwner);
-        } else {/* if( newOwner == owner )*/}
+        } else {
+            setPoints(getPints()+1);
+        }
     }
 
     @Override
@@ -79,6 +85,17 @@ public class CellToggle extends Cell {
                 break;
             }
         }
+    }
+
+    @Override
+    public int getPints() {
+        return points;
+    }
+
+    @Override
+    public void setPoints(int points) {
+        this.points = points;
+        textView.setText(Integer.toString(points));
     }
 
     @Override

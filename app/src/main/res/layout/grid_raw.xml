@@ -4,9 +4,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ToggleButton style="@style/CellStyle" />
-    <ToggleButton style="@style/CellStyle" />
-    <ToggleButton style="@style/CellStyle" />
-    <ToggleButton style="@style/CellStyle" />
-    <ToggleButton style="@style/CellStyle" />
+    <include layout="@layout/cell" />
+    <include layout="@layout/cell" />
+    <include layout="@layout/cell" />
+    <include layout="@layout/cell" />
+    <include layout="@layout/cell" />
 </TableRow>

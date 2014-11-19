@@ -2,7 +2,6 @@ package com.android.luckybug.buildaword;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -15,15 +14,12 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
-import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Conrtol.Prison;
+import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Logic.Exchange.Client;
 import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 public class Board extends Activity {
@@ -107,25 +103,7 @@ public class Board extends Activity {
             }
         });
 
-        List<Point> myCells = new ArrayList<Point>();
-        List<Point> enemyCells = new ArrayList<Point>();
 
-        myCells.add(new Point(0,0));
-        myCells.add(new Point(0,1));
-        myCells.add(new Point(0,2));
-        myCells.add(new Point(0,3));
-        myCells.add(new Point(0,4));
-
-        enemyCells.add(new Point(4,0));
-        enemyCells.add(new Point(4,1));
-        enemyCells.add(new Point(4,2));
-        enemyCells.add(new Point(4,3));
-        enemyCells.add(new Point(4,4));
-
-        prison
-                .setCellsOwner(myCells, Cell.Owner.me)
-                .setCellsOwner(enemyCells, Cell.Owner.enemy)
-                .calcEnable();
     }
 
 
