@@ -2,12 +2,14 @@ package com.android.luckybug.buildaword;
 
 import android.app.DialogFragment;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +26,7 @@ import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
 import java.util.Arrays;
 
 
-public class Board extends FragmentActivity {
+public class Board extends FragmentActivity implements PostGameFragment.OnFragmentInteractionListener {
 
     private Dictionary dictionary;
     private Prison prison;
@@ -140,5 +142,10 @@ public class Board extends FragmentActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        Log.d("Board", "something fucking happend " + uri.toString());
     }
 }
