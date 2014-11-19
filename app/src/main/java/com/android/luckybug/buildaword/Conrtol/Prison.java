@@ -150,7 +150,7 @@ public class Prison {
                 }
             }
 
-            if(!res.equals(""))
+            if(!res.isEmpty())
                 sequence.add(Integer.parseInt(res));
         }
     }
