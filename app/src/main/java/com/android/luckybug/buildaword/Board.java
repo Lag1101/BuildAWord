@@ -26,7 +26,7 @@ import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
 import java.util.Arrays;
 
 
-public class Board extends FragmentActivity implements PostGameFragment.OnFragmentInteractionListener {
+public class Board extends FragmentActivity {
 
     private Dictionary dictionary;
     private Prison prison;
@@ -128,12 +128,13 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
         switch (id) {
             case R.id.win: {
-                DialogFragment fragment = PostGameFragment.newInstance("p1", "p2");
+                DialogFragment fragment = PostGameFragment.newInstance("Win!!!", "me", "some comment");
                 fragment.show(fm, "win");
                 return true;
             }
             case R.id.lose: {
-
+                DialogFragment fragment = PostGameFragment.newInstance("Lose...", "me", "some comment");
+                fragment.show(fm, "lose");
                 return true;
             }
             case R.id.action_settings: {
@@ -142,10 +143,5 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        Log.d("Board", "something fucking happend " + uri.toString());
     }
 }
