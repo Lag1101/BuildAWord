@@ -16,7 +16,8 @@ public abstract class Cell {
     public abstract void onClick(final Callback listener);
     public abstract String getText();
     public abstract void setText(String text);
-    public abstract void setOwner(Owner own);
+    public abstract void
+    setOwner(Owner own);
 
     public abstract int getPints();
     public abstract void setPoints(int points);

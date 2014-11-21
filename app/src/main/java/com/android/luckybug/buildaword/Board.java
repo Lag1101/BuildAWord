@@ -22,6 +22,7 @@ import com.android.luckybug.buildaword.Conrtol.Prison;
 import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Logic.Exchange.Client;
 import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
+import com.android.luckybug.buildaword.Logic.Exchange.TrickClient;
 
 import java.util.Arrays;
 
@@ -30,7 +31,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
     private Dictionary dictionary;
     private Prison prison;
-    private MyHttpClient client = null;
+    private Client client = null;
     FragmentManager fm = getFragmentManager();
 
     @Override
@@ -86,11 +87,8 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
             @Override
             public void onClick(View view) {
                 if( dictionary.contains(editText.getText().toString()) ) {
-                    if (client == null) {
-                        client = new MyHttpClient();
-                    }
-                    if (client.getStatus() != AsyncTask.Status.RUNNING) {
-                        client = new MyHttpClient();
+                    if (client == null || client.getStatus() != AsyncTask.Status.RUNNING) {
+                        client = new TrickClient();
                         client.setOnPostExecute(new Client.Callback() {
                             @Override
                             public void callback(String response) {

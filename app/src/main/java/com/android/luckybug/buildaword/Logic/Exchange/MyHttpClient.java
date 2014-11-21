@@ -1,6 +1,5 @@
 package com.android.luckybug.buildaword.Logic.Exchange;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.apache.http.NameValuePair;
@@ -17,14 +16,9 @@ import java.util.List;
 /**
  * Created by luckybug on 16.11.14. Have a lot of fun!(c)
  */
-public class MyHttpClient extends AsyncTask<String, String, String> {
+public class MyHttpClient extends Client {
 
     private static final String url = "http://91.219.165.141:3000/";
-    private Client.Callback onPostExecuteCallback = null;
-
-    public void setOnPostExecute(Client.Callback callback) {
-        onPostExecuteCallback = callback;
-    }
 
     String send(String msg)
     {
@@ -50,16 +44,8 @@ public class MyHttpClient extends AsyncTask<String, String, String> {
         return response;
     }
 
-    @Override
-    protected String doInBackground(String... strings) {
-        return send(strings[0]);
-    }
 
-    @Override
-    protected void onPostExecute(String response) {
-        super.onPostExecute(response);
-        onPostExecuteCallback.callback(response);
-        Log.d("client", "Sent");
-    }
+
+
 
 }
