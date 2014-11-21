@@ -167,6 +167,18 @@ public class Prison {
         return text;
     }
 
+    public int getPoints() {
+        int points = 0;
+
+        for(int index : sequence) {
+            int x = index % cols;
+            int y = index / cols;
+
+            points += cells[y][x].getPints();
+        }
+        return points;
+    }
+
     void generate() {
         for( int y = 0; y < rows; y++ ) {
             for( int x = 0; x < cols; x++ ) {

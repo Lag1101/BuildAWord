@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +22,6 @@ import android.widget.Toast;
 import com.android.luckybug.buildaword.Conrtol.Prison;
 import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Logic.Exchange.Client;
-import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
 import com.android.luckybug.buildaword.Logic.Exchange.TrickClient;
 
 import java.util.Arrays;
@@ -32,6 +32,8 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
     private Dictionary dictionary;
     private Prison prison;
     private Client client = null;
+    private TextView myPointsView;
+    private int pointsCount = 0;
     FragmentManager fm = getFragmentManager();
 
     @Override
@@ -83,6 +85,9 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
         Button connectBtn = (Button)findViewById(R.id.connectBtn);
 
+        RelativeLayout myStats = (RelativeLayout)findViewById(R.id.myStats);
+        myPointsView = (TextView)myStats.findViewById(R.id.pointsCount);
+        myPointsView.setText(Integer.toString(pointsCount));
         connectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,6 +101,8 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
                                 Toast.makeText(getApplicationContext(), response + " sent", Toast.LENGTH_SHORT).show();
 
                                 prison.buildSequence(response);
+                                pointsCount += prison.getPoints();
+                                myPointsView.setText(Integer.toString(pointsCount));
                                 prison.setCellsOwner();
                                 prison.calcEnable();
                             }
