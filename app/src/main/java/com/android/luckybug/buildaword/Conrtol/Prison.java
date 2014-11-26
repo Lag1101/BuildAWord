@@ -26,6 +26,8 @@ public class Prison {
     private final List<Integer> sequence;
     private Callback textChangeListener;
 
+    final public int defaultOwnerPoints = 5;
+    final public int defaultPoints = 1;
 
 
     public interface Callback{
@@ -186,9 +188,9 @@ public class Prison {
                 cells[y][x].setText( Character.toString( alphabet.charAt(index) ) );
 
                 if(cells[y][x].getOwner() != Cell.Owner.nobody)
-                    cells[y][x].setPoints(5);
+                    cells[y][x].setPoints(defaultOwnerPoints);
                 else
-                    cells[y][x].setPoints(1);
+                    cells[y][x].setPoints(defaultPoints);
             }
         }
     }
@@ -202,5 +204,11 @@ public class Prison {
         }
         sequence.clear();
         onTextChange();
+    }
+
+    public void setEnable(boolean enable) {
+        for( int y = 0; y < rows; y++ ) for (int x = 0; x < cols; x++) {
+            cells[y][x].setEnable(enable);
+        }
     }
 }
