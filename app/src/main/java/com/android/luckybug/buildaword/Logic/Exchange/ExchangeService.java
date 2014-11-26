@@ -16,6 +16,7 @@ import com.android.luckybug.buildaword.MainActivity;
 import com.android.luckybug.buildaword.R;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ExchangeService extends Service {
     private NotificationManager nm;
@@ -56,11 +57,22 @@ public class ExchangeService extends Service {
 
                     try {
                         wait(1000);
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-                    sendMessageToUI(Message.obtain(null, MSG_RECIEVE_WORD, "[22,23]"));
+                    Random r = new Random();
+
+                    int length = (Math.abs(r.nextInt()) % 3) + 1;
+
+                    String seq = "[";
+
+                    for( int i = 0; i < length; i++ )
+                        seq += (Math.abs(r.nextInt()) % 25 ) + ",";
+
+                    seq += "]";
+
+                    sendMessageToUI(Message.obtain(null, MSG_RECIEVE_WORD, seq));
 
                     break;
                 default:

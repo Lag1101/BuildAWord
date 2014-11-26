@@ -23,11 +23,7 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".Logic.Exchange.ExchangeService"
-            android:enabled="true"
-            android:exported="false">
-        </service>
+        <service android:name=".Logic.Exchange.ExchangeService"/>
     </application>
 
 </manifest>

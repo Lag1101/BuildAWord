@@ -112,14 +112,14 @@ public class Prison {
         return this;
     }
 
-    public Prison setCellsOwner() {
+    public Prison setCellsOwner(Cell.Owner owner) {
         List<Point> points = new ArrayList<Point>();
         for(int index : sequence) {
             int x = index % cols;
             int y = index / cols;
             points.add(new Point(x, y));
         }
-        setCellsOwner(points, Cell.Owner.me);
+        setCellsOwner(points, owner);
         erase();
 
         return this;

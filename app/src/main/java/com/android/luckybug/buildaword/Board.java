@@ -27,6 +27,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
 import com.android.luckybug.buildaword.Conrtol.Prison;
 import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Logic.Exchange.ExchangeService;
@@ -50,18 +51,26 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
             switch (msg.what) {
                 case ExchangeService.MSG_SENT:{
 
-                    Toast.makeText(getApplicationContext(), prison.buildText() + " sent", Toast.LENGTH_SHORT).show();
+                    Log.i("board", prison.getSequence().toString() + " sent");
 
                     pointsCount += prison.getPoints();
                     myPointsView.setText(Integer.toString(pointsCount));
-                    prison.setCellsOwner();
-                    prison.calcEnable();
-
+                    prison.setCellsOwner(Cell.Owner.me);
+                    prison.erase();
                     prison.setEnable(false);
+
+                    break;
                 }
                 case ExchangeService.MSG_RECIEVE_WORD: {
 
-                    Toast.makeText(getApplicationContext(), msg.toString() + " received", Toast.LENGTH_SHORT).show();
+                    Log.i("board", msg.obj + " received");
+
+                    prison.buildSequence((String)msg.obj);
+                    prison.setCellsOwner(Cell.Owner.enemy);
+                    prison.calcEnable();
+                    prison.erase();
+
+                    break;
                 }
                 default:
                     super.handleMessage(msg);
@@ -157,9 +166,9 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
         });
 
-        if (ExchangeService.isRunning()) {
-            doBindService();
-        }
+        //if (ExchangeService.isRunning()) {
+        doBindService();
+        //}
 
     }
     private void sendMessageToService(Message msg) {
