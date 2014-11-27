@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
+import com.android.luckybug.buildaword.Conrtol.Player;
 import com.android.luckybug.buildaword.Conrtol.Prison;
 import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Logic.Exchange.ExchangeService;
@@ -30,8 +31,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
     private Dictionary dictionary;
     private Prison prison;
-    private TextView myPointsView;
-    private int pointsCount = 0;
+    private Player player;
 
     FragmentManager fm = getFragmentManager();
 
@@ -43,8 +43,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
                     Log.i("board", prison.getSequence().toString() + " sent");
 
-                    pointsCount += prison.getPoints();
-                    myPointsView.setText(Integer.toString(pointsCount));
+                    player.addPoints(prison.getPoints());
                     prison.setCellsOwner(Cell.Owner.me);
                     prison.erase();
                     prison.setEnable(false);
@@ -76,6 +75,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
         dictionary = new Dictionary(this);
         prison = new Prison((TableLayout)findViewById(R.id.grid));
+        player = new Player(findViewById(R.id.myStats), 0, 20, 30, 50);
 
         final TextView editText = (TextView)findViewById(R.id.textLabel);
 
@@ -118,10 +118,6 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
         Button connectBtn = (Button)findViewById(R.id.connectBtn);
 
-        RelativeLayout myStats = (RelativeLayout)findViewById(R.id.myStats);
-        myPointsView = (TextView)myStats.findViewById(R.id.pointsCount);
-        myPointsView.setText(Integer.toString(pointsCount));
-
         connectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,9 +133,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
         });
 
-        //if (ExchangeService.isRunning()) {
         mConnection.doBindService();
-        //}
 
     }
 
