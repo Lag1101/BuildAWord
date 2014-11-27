@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
@@ -21,7 +22,7 @@ import com.android.luckybug.buildaword.Conrtol.Player;
 import com.android.luckybug.buildaword.Conrtol.Prison;
 import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Logic.Exchange.ExchangeService;
-import com.android.luckybug.buildaword.Logic.MyServiceConnection;
+import com.android.luckybug.buildaword.Logic.Exchange.MyServiceConnection;
 
 public class Board extends FragmentActivity implements PostGameFragment.OnFragmentInteractionListener {
 
@@ -29,17 +30,45 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
     private Prison prison;
     private Player me, enemy;
 
-    private TextView viewForBuiltWord;
+    private int msPerTurn = 15*1000;
+    private Cell.Owner turn = Cell.Owner.me;
+    MyCountDownTimer timer;
 
-    FragmentManager fm = getFragmentManager();
+    private TextView viewForBuiltWord;
+    private TextView clock;
+
+    private FragmentManager fm = getFragmentManager();
 
     private MyServiceConnection mConnection = new MyServiceConnection(this, new IncomingHandler());
+
+    public void onClickBackMain(View view) {
+        finish();
+    }
+
+    class MyCountDownTimer extends CountDownTimer{
+        public MyCountDownTimer(long millisInFuture) {
+            super(millisInFuture, 1000);
+            start();
+        }
+
+        @Override
+        public void onTick(long l) {
+            clock.setText(Long.toString(l));
+        }
+
+        @Override
+        public void onFinish() {
+            endGame();
+        }
+    }
 
     class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case ExchangeService.MSG_SENT:{
+
+                    turn = Cell.Owner.enemy;
 
                     Log.i("board", prison.getSequence().toString() + " sent");
 
@@ -48,9 +77,14 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
                     prison.erase();
                     prison.setEnable(false);
 
+                    timer.cancel();
+                    timer = new MyCountDownTimer(msPerTurn);
+
                     break;
                 }
-                case ExchangeService.MSG_RECIEVE_WORD: {
+                case ExchangeService.MSG_RECEIVE_WORD: {
+
+                    turn = Cell.Owner.me;
 
                     Log.i("board", msg.obj + " received");
 
@@ -59,6 +93,9 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
                     prison.setCellsOwner(Cell.Owner.enemy);
                     prison.calcEnable();
                     prison.erase();
+
+                    timer.cancel();
+                    timer = new MyCountDownTimer(msPerTurn);
 
                     break;
                 }
@@ -79,6 +116,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
         enemy = new Player(findViewById(R.id.enemyStats), 0, 20, 30, 50);
 
         viewForBuiltWord = (TextView)findViewById(R.id.textLabel);
+        clock = (TextView)findViewById(R.id.clock);
 
         prison.onTextChange(new Prison.Callback() {
             @Override
@@ -90,6 +128,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
         mConnection.doBindService();
 
+        timer = new MyCountDownTimer(msPerTurn);
     }
 
     public void onClickSend(View view) {
@@ -154,5 +193,10 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
     @Override
     public void onFragmentInteraction(Uri uri) {
         Log.d("Board", "something fucking happend " + uri.toString());
+    }
+
+    void endGame() {
+        DialogFragment fragment = PostGameFragment.newInstance("p1", "p2");
+        fragment.show(fm, "win");
     }
 }

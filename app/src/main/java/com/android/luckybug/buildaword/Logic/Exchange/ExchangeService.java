@@ -30,7 +30,7 @@ public class ExchangeService extends Service {
     public static final int MSG_SEND_WORD = 3;
 
 
-    public static final int MSG_RECIEVE_WORD = 4;
+    public static final int MSG_RECEIVE_WORD = 4;
     public static final int MSG_SENT = 5;
 
     final Messenger mMessenger = new Messenger(new IncomingHandler()); // Target we publish for clients to send messages to IncomingHandler.
@@ -71,7 +71,7 @@ public class ExchangeService extends Service {
 
                     seq += "]";
 
-                    sendMessageToUI(Message.obtain(null, MSG_RECIEVE_WORD, seq));
+                    sendMessageToUI(Message.obtain(null, MSG_RECEIVE_WORD, seq));
 
                     break;
                 default:

@@ -75,17 +75,17 @@ public class Prison {
         List<Point> myCells = new ArrayList<Point>();
         List<Point> enemyCells = new ArrayList<Point>();
 
-        myCells.add(new Point(0,0));
-        myCells.add(new Point(0,1));
-        myCells.add(new Point(0,2));
-        myCells.add(new Point(0,3));
-        myCells.add(new Point(0,4));
-
+        enemyCells.add(new Point(0,0));
+        enemyCells.add(new Point(1,0));
+        enemyCells.add(new Point(2,0));
+        enemyCells.add(new Point(3,0));
         enemyCells.add(new Point(4,0));
-        enemyCells.add(new Point(4,1));
-        enemyCells.add(new Point(4,2));
-        enemyCells.add(new Point(4,3));
-        enemyCells.add(new Point(4,4));
+
+        myCells.add(new Point(0,4));
+        myCells.add(new Point(1,4));
+        myCells.add(new Point(2,4));
+        myCells.add(new Point(3,4));
+        myCells.add(new Point(4,4));
 
         setCellsOwner(myCells, Cell.Owner.me);
         setCellsOwner(enemyCells, Cell.Owner.enemy);

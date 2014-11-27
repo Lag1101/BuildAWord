@@ -1,4 +1,4 @@
-package com.android.luckybug.buildaword.Logic;
+package com.android.luckybug.buildaword.Logic.Exchange;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,8 +11,6 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.android.luckybug.buildaword.Logic.Exchange.ExchangeService;
 
 /**
  * Created by vasiliy.lomanov on 27.11.2014. Have a lot of fun!(c)
