@@ -8,14 +8,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,9 +27,13 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
     private Dictionary dictionary;
     private Prison prison;
-    private Player player;
+    private Player me, enemy;
+
+    private TextView viewForBuildedWord;
 
     FragmentManager fm = getFragmentManager();
+
+    private MyServiceConnection mConnection = new MyServiceConnection(this, new IncomingHandler());
 
     class IncomingHandler extends Handler {
         @Override
@@ -43,7 +43,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
                     Log.i("board", prison.getSequence().toString() + " sent");
 
-                    player.addPoints(prison.getPoints());
+                    me.addPoints(prison.getPoints());
                     prison.setCellsOwner(Cell.Owner.me);
                     prison.erase();
                     prison.setEnable(false);
@@ -55,6 +55,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
                     Log.i("board", msg.obj + " received");
 
                     prison.buildSequence((String)msg.obj);
+                    enemy.addPoints(prison.getPoints());
                     prison.setCellsOwner(Cell.Owner.enemy);
                     prison.calcEnable();
                     prison.erase();
@@ -66,7 +67,6 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
             }
         }
     }
-    private MyServiceConnection mConnection = new MyServiceConnection(this, new IncomingHandler());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,66 +75,36 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
 
         dictionary = new Dictionary(this);
         prison = new Prison((TableLayout)findViewById(R.id.grid));
-        player = new Player(findViewById(R.id.myStats), 0, 20, 30, 50);
+        me = new Player(findViewById(R.id.myStats), 0, 20, 30, 50);
+        enemy = new Player(findViewById(R.id.enemyStats), 0, 20, 30, 50);
 
-        final TextView editText = (TextView)findViewById(R.id.textLabel);
+        viewForBuildedWord = (TextView)findViewById(R.id.textLabel);
 
         prison.onTextChange(new Prison.Callback() {
             @Override
             public void callback(String text) {
-                editText.setText(text);
+                viewForBuildedWord.setText(text);
+                viewForBuildedWord.setBackgroundColor(dictionary.contains(text) ? Color.GREEN : Color.RED);
             }
-        });
-
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if( dictionary.contains(s.toString()) ) {
-                    editText.setBackgroundColor(Color.GREEN);
-                } else {
-                    editText.setBackgroundColor(Color.RED);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        Button eraseBtn = (Button)findViewById(R.id.erase);
-
-        eraseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                prison.erase();
-            }
-        });
-
-        Button connectBtn = (Button)findViewById(R.id.connectBtn);
-
-        connectBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String word = editText.getText().toString();
-
-                if( !dictionary.contains(word) ) {
-
-                    Toast.makeText(getApplicationContext(), word + "? не слышали", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                mConnection.sendMessageToService(Message.obtain(null, ExchangeService.MSG_SEND_WORD, word));
-            }
-
         });
 
         mConnection.doBindService();
 
+    }
+
+    public void onClickSend(View view) {
+        String word = viewForBuildedWord.getText().toString();
+
+        if( !dictionary.contains(word) ) {
+
+            Toast.makeText(getApplicationContext(), word + "? не слышали", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mConnection.sendMessageToService(Message.obtain(null, ExchangeService.MSG_SEND_WORD, word));
+    }
+
+    public void onClickErase(View view) {
+        prison.erase();
     }
 
     @Override

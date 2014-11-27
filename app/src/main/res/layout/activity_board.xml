@@ -14,7 +14,7 @@
         android:id="@+id/textLabel"
         android:textSize="40sp"
         android:textAlignment="gravity"
-        android:layout_toStartOf="@+id/connectBtn"
+        android:layout_toStartOf="@+id/sendBtn"
         android:layout_toEndOf="@+id/erase"
         android:layout_alignTop="@+id/erase"
         android:layout_alignBottom="@+id/erase" />
@@ -32,6 +32,7 @@
         android:background="@drawable/btn_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onClickErase"
         android:text="@string/cancel_btn_text"
         android:id="@+id/erase"
         android:layout_above="@+id/grid"
@@ -42,8 +43,9 @@
         android:background="@drawable/btn_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onClickSend"
         android:text="@string/send_btn_text"
-        android:id="@+id/connectBtn"
+        android:id="@+id/sendBtn"
         android:layout_above="@+id/grid"
         android:layout_alignEnd="@+id/grid" />
 
