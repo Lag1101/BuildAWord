@@ -29,7 +29,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
     private Prison prison;
     private Player me, enemy;
 
-    private TextView viewForBuildedWord;
+    private TextView viewForBuiltWord;
 
     FragmentManager fm = getFragmentManager();
 
@@ -78,13 +78,13 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
         me = new Player(findViewById(R.id.myStats), 0, 20, 30, 50);
         enemy = new Player(findViewById(R.id.enemyStats), 0, 20, 30, 50);
 
-        viewForBuildedWord = (TextView)findViewById(R.id.textLabel);
+        viewForBuiltWord = (TextView)findViewById(R.id.textLabel);
 
         prison.onTextChange(new Prison.Callback() {
             @Override
             public void callback(String text) {
-                viewForBuildedWord.setText(text);
-                viewForBuildedWord.setBackgroundColor(dictionary.contains(text) ? Color.GREEN : Color.RED);
+                viewForBuiltWord.setText(text);
+                viewForBuiltWord.setBackgroundColor(dictionary.contains(text) ? Color.GREEN : Color.RED);
             }
         });
 
@@ -93,7 +93,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
     }
 
     public void onClickSend(View view) {
-        String word = viewForBuildedWord.getText().toString();
+        String word = viewForBuiltWord.getText().toString();
 
         if( !dictionary.contains(word) ) {
 
