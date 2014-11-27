@@ -35,7 +35,6 @@ public class ExchangeService extends Service {
 
     final Messenger mMessenger = new Messenger(new IncomingHandler()); // Target we publish for clients to send messages to IncomingHandler.
 
-
     @Override
     public IBinder onBind(Intent intent) {
         return mMessenger.getBinder();

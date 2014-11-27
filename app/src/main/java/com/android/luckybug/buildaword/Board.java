@@ -1,20 +1,13 @@
 package com.android.luckybug.buildaword;
 
 import android.app.DialogFragment;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.app.FragmentManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
 import android.support.v4.app.FragmentActivity;
-import android.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,6 +24,7 @@ import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
 import com.android.luckybug.buildaword.Conrtol.Prison;
 import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Logic.Exchange.ExchangeService;
+import com.android.luckybug.buildaword.Logic.MyServiceConnection;
 
 public class Board extends FragmentActivity implements PostGameFragment.OnFragmentInteractionListener {
 
@@ -38,10 +32,6 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
     private Prison prison;
     private TextView myPointsView;
     private int pointsCount = 0;
-
-    Messenger mService = null;
-    boolean mIsBound;
-    final Messenger mMessenger = new Messenger(new IncomingHandler());
 
     FragmentManager fm = getFragmentManager();
 
@@ -77,26 +67,7 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
             }
         }
     }
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mService = new Messenger(service);
-            Toast.makeText(getApplicationContext(), "Attached", Toast.LENGTH_SHORT).show();
-            try {
-                Message msg = Message.obtain(null, ExchangeService.MSG_REGISTER_CLIENT);
-                msg.replyTo = mMessenger;
-                mService.send(msg);
-            }
-            catch (RemoteException e) {
-                // In this case the service has crashed before we could even do anything with it
-            }
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            // This is called when the connection with the service has been unexpectedly disconnected - process crashed.
-            mService = null;
-            Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_SHORT).show();
-        }
-    };
+    private MyServiceConnection mConnection = new MyServiceConnection(this, new IncomingHandler());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,63 +132,25 @@ public class Board extends FragmentActivity implements PostGameFragment.OnFragme
                     Toast.makeText(getApplicationContext(), word + "? не слышали", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                sendMessageToService(Message.obtain(null, ExchangeService.MSG_SEND_WORD, word));
+                mConnection.sendMessageToService(Message.obtain(null, ExchangeService.MSG_SEND_WORD, word));
             }
 
         });
 
         //if (ExchangeService.isRunning()) {
-        doBindService();
+        mConnection.doBindService();
         //}
 
-    }
-    private void sendMessageToService(Message msg) {
-        if (mIsBound) {
-            if (mService != null) {
-                try {
-                    msg.replyTo = mMessenger;
-                    mService.send(msg);
-                }
-                catch (RemoteException e) {
-                    Log.d("Board", e.getMessage());
-                }
-            }
-        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         try {
-            doUnbindService();
+            mConnection.doUnbindService();
         }
         catch (Throwable t) {
             Log.e("Board", "Failed to unbind from the service", t);
-        }
-    }
-
-    void doBindService() {
-        bindService(new Intent(this, ExchangeService.class), mConnection, Context.BIND_AUTO_CREATE);
-        mIsBound = true;
-        Toast.makeText(this, "Binding", Toast.LENGTH_SHORT).show();
-    }
-    void doUnbindService() {
-        if (mIsBound) {
-            // If we have received the service, and hence registered with it, then now is the time to unregister.
-            if (mService != null) {
-                try {
-                    Message msg = Message.obtain(null, ExchangeService.MSG_UNREGISTER_CLIENT);
-                    msg.replyTo = mMessenger;
-                    mService.send(msg);
-                }
-                catch (RemoteException e) {
-                    // There is nothing special we need to do if the service has crashed.
-                }
-            }
-            // Detach our existing connection.
-            unbindService(mConnection);
-            mIsBound = false;
-            Toast.makeText(this, "Unbinding", Toast.LENGTH_SHORT).show();
         }
     }
 
