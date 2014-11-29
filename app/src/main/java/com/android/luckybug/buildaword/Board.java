@@ -24,6 +24,7 @@ import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Logic.Exchange.ExchangeService;
 import com.android.luckybug.buildaword.Logic.Exchange.MyServiceConnection;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 
@@ -115,8 +116,8 @@ public class Board extends FragmentActivity {
 
         dictionary = new Dictionary(this);
         prison = new Prison((TableLayout)findViewById(R.id.grid));
-        me = new Player(findViewById(R.id.myStats), 0, 20, 30, 50);
-        enemy = new Player(findViewById(R.id.enemyStats), 0, 20, 30, 50);
+        me = new Player(findViewById(R.id.myStats), 0, 20, 30, 50, new WeakReference<Prison>(prison));
+        enemy = new Player(findViewById(R.id.enemyStats), 0, 20, 30, 50, new WeakReference<Prison>(prison));
 
         viewForBuiltWord = (TextView)findViewById(R.id.textLabel);
         clock = (TextView)findViewById(R.id.clock);
