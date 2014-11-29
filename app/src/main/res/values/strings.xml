@@ -15,5 +15,6 @@
     <string name="post_game_screen_winner_text">Winner</string>
     <string name="post_game_screen_comment_text">Comments</string>
     <string name="avatar_description">avatar image</string>
+    <string name="service_started">service_started</string>
 
 </resources>

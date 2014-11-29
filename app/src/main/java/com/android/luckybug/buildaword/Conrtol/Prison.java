@@ -26,6 +26,9 @@ public class Prison {
     private final List<Integer> sequence;
     private Callback textChangeListener;
 
+    final public int defaultOwnerPoints = 5;
+    final public int defaultPoints = 1;
+
 
     public interface Callback{
         public void callback(String text);
@@ -72,17 +75,17 @@ public class Prison {
         List<Point> myCells = new ArrayList<Point>();
         List<Point> enemyCells = new ArrayList<Point>();
 
-        myCells.add(new Point(0,0));
-        myCells.add(new Point(0,1));
-        myCells.add(new Point(0,2));
-        myCells.add(new Point(0,3));
-        myCells.add(new Point(0,4));
-
+        enemyCells.add(new Point(0,0));
+        enemyCells.add(new Point(1,0));
+        enemyCells.add(new Point(2,0));
+        enemyCells.add(new Point(3,0));
         enemyCells.add(new Point(4,0));
-        enemyCells.add(new Point(4,1));
-        enemyCells.add(new Point(4,2));
-        enemyCells.add(new Point(4,3));
-        enemyCells.add(new Point(4,4));
+
+        myCells.add(new Point(0,4));
+        myCells.add(new Point(1,4));
+        myCells.add(new Point(2,4));
+        myCells.add(new Point(3,4));
+        myCells.add(new Point(4,4));
 
         setCellsOwner(myCells, Cell.Owner.me);
         setCellsOwner(enemyCells, Cell.Owner.enemy);
@@ -109,14 +112,14 @@ public class Prison {
         return this;
     }
 
-    public Prison setCellsOwner() {
+    public Prison setCellsOwner(Cell.Owner owner) {
         List<Point> points = new ArrayList<Point>();
         for(int index : sequence) {
             int x = index % cols;
             int y = index / cols;
             points.add(new Point(x, y));
         }
-        setCellsOwner(points, Cell.Owner.me);
+        setCellsOwner(points, owner);
         erase();
 
         return this;
@@ -166,6 +169,18 @@ public class Prison {
         return text;
     }
 
+    public int getPoints() {
+        int points = 0;
+
+        for(int index : sequence) {
+            int x = index % cols;
+            int y = index / cols;
+
+            points += cells[y][x].getPints();
+        }
+        return points;
+    }
+
     void generate() {
         for( int y = 0; y < rows; y++ ) {
             for( int x = 0; x < cols; x++ ) {
@@ -173,9 +188,9 @@ public class Prison {
                 cells[y][x].setText( Character.toString( alphabet.charAt(index) ) );
 
                 if(cells[y][x].getOwner() != Cell.Owner.nobody)
-                    cells[y][x].setPoints(5);
+                    cells[y][x].setPoints(defaultOwnerPoints);
                 else
-                    cells[y][x].setPoints(1);
+                    cells[y][x].setPoints(defaultPoints);
             }
         }
     }
@@ -189,5 +204,11 @@ public class Prison {
         }
         sequence.clear();
         onTextChange();
+    }
+
+    public void setEnable(boolean enable) {
+        for( int y = 0; y < rows; y++ ) for (int x = 0; x < cols; x++) {
+            cells[y][x].setEnable(enable);
+        }
     }
 }

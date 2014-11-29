@@ -1,27 +1,28 @@
 package com.android.luckybug.buildaword;
 
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
-import android.app.FragmentManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
+import com.android.luckybug.buildaword.Conrtol.Player;
 import com.android.luckybug.buildaword.Conrtol.Prison;
 import com.android.luckybug.buildaword.Logic.Dictionary;
-import com.android.luckybug.buildaword.Logic.Exchange.Client;
-import com.android.luckybug.buildaword.Logic.Exchange.MyHttpClient;
+import com.android.luckybug.buildaword.Logic.Exchange.ExchangeService;
+import com.android.luckybug.buildaword.Logic.Exchange.MyServiceConnection;
 
 import java.util.Arrays;
 
@@ -30,8 +31,82 @@ public class Board extends FragmentActivity {
 
     private Dictionary dictionary;
     private Prison prison;
-    private MyHttpClient client = null;
-    FragmentManager fm = getFragmentManager();
+    private Player me, enemy;
+
+    private int msPerTurn = 15*1000;
+    private Cell.Owner turn = Cell.Owner.me;
+    MyCountDownTimer timer;
+
+    private TextView viewForBuiltWord;
+    private TextView clock;
+
+    private FragmentManager fm = getFragmentManager();
+
+    private MyServiceConnection mConnection = new MyServiceConnection(this, new IncomingHandler());
+
+    public void onClickBackMain(View view) {
+        finish();
+    }
+
+    class MyCountDownTimer extends CountDownTimer{
+        public MyCountDownTimer(long millisInFuture) {
+            super(millisInFuture, 1000);
+            start();
+        }
+
+        @Override
+        public void onTick(long l) {
+            clock.setText(Long.toString(l));
+        }
+
+        @Override
+        public void onFinish() {
+            endGame();
+        }
+    }
+
+    class IncomingHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case ExchangeService.MSG_SENT:{
+
+                    turn = Cell.Owner.enemy;
+
+                    Log.i("board", prison.getSequence().toString() + " sent");
+
+                    me.addPoints(prison.getPoints());
+                    prison.setCellsOwner(Cell.Owner.me);
+                    prison.erase();
+                    prison.setEnable(false);
+
+                    timer.cancel();
+                    timer = new MyCountDownTimer(msPerTurn);
+
+                    break;
+                }
+                case ExchangeService.MSG_RECEIVE_WORD: {
+
+                    turn = Cell.Owner.me;
+
+                    Log.i("board", msg.obj + " received");
+
+                    prison.buildSequence((String)msg.obj);
+                    enemy.addPoints(prison.getPoints());
+                    prison.setCellsOwner(Cell.Owner.enemy);
+                    prison.calcEnable();
+                    prison.erase();
+
+                    timer.cancel();
+                    timer = new MyCountDownTimer(msPerTurn);
+
+                    break;
+                }
+                default:
+                    super.handleMessage(msg);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,75 +115,49 @@ public class Board extends FragmentActivity {
 
         dictionary = new Dictionary(this);
         prison = new Prison((TableLayout)findViewById(R.id.grid));
+        me = new Player(findViewById(R.id.myStats), 0, 20, 30, 50);
+        enemy = new Player(findViewById(R.id.enemyStats), 0, 20, 30, 50);
 
-        final TextView editText = (TextView)findViewById(R.id.textLabel);
+        viewForBuiltWord = (TextView)findViewById(R.id.textLabel);
+        clock = (TextView)findViewById(R.id.clock);
 
         prison.onTextChange(new Prison.Callback() {
             @Override
             public void callback(String text) {
-                editText.setText(text);
+                viewForBuiltWord.setText(text);
+                viewForBuiltWord.setBackgroundColor(dictionary.contains(text) ? Color.GREEN : Color.RED);
             }
         });
 
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        mConnection.doBindService();
 
-            }
+        timer = new MyCountDownTimer(msPerTurn);
+    }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if( dictionary.contains(s.toString()) ) {
-                    editText.setBackgroundColor(Color.GREEN);
-                } else {
-                    editText.setBackgroundColor(Color.RED);
-                }
-            }
+    public void onClickSend(View view) {
+        String word = viewForBuiltWord.getText().toString();
 
-            @Override
-            public void afterTextChanged(Editable s) {
+        if( !dictionary.contains(word) ) {
 
-            }
-        });
+            Toast.makeText(getApplicationContext(), word + "? не слышали", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mConnection.sendMessageToService(Message.obtain(null, ExchangeService.MSG_SEND_WORD, word));
+    }
 
-        Button eraseBtn = (Button)findViewById(R.id.erase);
+    public void onClickErase(View view) {
+        prison.erase();
+    }
 
-        eraseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                prison.erase();
-            }
-        });
-
-        Button connectBtn = (Button)findViewById(R.id.connectBtn);
-
-        connectBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if( dictionary.contains(editText.getText().toString()) ) {
-                    if (client == null) {
-                        client = new MyHttpClient();
-                    }
-                    if (client.getStatus() != AsyncTask.Status.RUNNING) {
-                        client = new MyHttpClient();
-                        client.setOnPostExecute(new Client.Callback() {
-                            @Override
-                            public void callback(String response) {
-
-                                Toast.makeText(getApplicationContext(), response + " sent", Toast.LENGTH_SHORT).show();
-
-                                prison.buildSequence(response);
-                                prison.setCellsOwner();
-                                prison.calcEnable();
-                            }
-                        });
-                        client.execute(Arrays.toString(prison.getSequence().toArray()));
-                    }
-                }
-            }
-        });
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            mConnection.doUnbindService();
+        }
+        catch (Throwable t) {
+            Log.e("Board", "Failed to unbind from the service", t);
+        }
     }
 
 
@@ -143,5 +192,15 @@ public class Board extends FragmentActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        Log.d("Board", "something fucking happend " + uri.toString());
+    }
+
+    void endGame() {
+        DialogFragment fragment = PostGameFragment.newInstance("p1", "p2");
+        fragment.show(fm, "win");
     }
 }
