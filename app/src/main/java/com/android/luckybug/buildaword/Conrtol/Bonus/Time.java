@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
+import com.android.luckybug.buildaword.Logic.Game;
 
 /**
  * Created by luckybug on 29.11.14.
@@ -11,10 +12,10 @@ import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
 class Time extends BasicBonus {
 
     @Override
-    void apply(Cell cell) {
+    void apply(Game game) {
 
+        super.apply(null);
     }
-
     public Time(View image, TextView cost) {
         super(image, cost);
     }

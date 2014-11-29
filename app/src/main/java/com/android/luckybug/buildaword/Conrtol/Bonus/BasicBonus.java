@@ -4,6 +4,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
+import com.android.luckybug.buildaword.Logic.Game;
+
+import java.util.Objects;
 
 /**
  * Created by luckybug on 29.11.14.
@@ -29,7 +32,11 @@ public abstract class BasicBonus {
         }
     }
 
-    abstract void apply(Cell cell);
+
+
+    void apply(Game game) {
+        setCost(2*getCost());
+    }
 
     public void setEnabled(boolean enable) {
         imageView.setEnabled(enable);
