@@ -63,7 +63,7 @@ public class MyServiceConnection implements ServiceConnection {
     public void doBindService() {
         mContext.bindService(new Intent(mContext, ExchangeService.class), this, Context.BIND_AUTO_CREATE);
         mIsBound = true;
-        Log.i("Board", "Binding");
+        Log.i("Connection", "Binding");
         Toast.makeText(mContext, "Binding", Toast.LENGTH_SHORT).show();
     }
     public void doUnbindService() {
@@ -77,7 +77,7 @@ public class MyServiceConnection implements ServiceConnection {
                 }
                 catch (RemoteException e) {
                     // There is nothing special we need to do if the service has crashed.
-                    Log.d("Board", e.getMessage());
+                    Log.d("Connection", e.getMessage());
                 }
             }
             // Detach our existing connection.

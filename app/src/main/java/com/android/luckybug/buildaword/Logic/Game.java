@@ -3,7 +3,6 @@ package com.android.luckybug.buildaword.Logic;
 import android.os.CountDownTimer;
 
 import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
-import com.android.luckybug.buildaword.Conrtol.Player;
 import com.android.luckybug.buildaword.Conrtol.Prison;
 
 /**

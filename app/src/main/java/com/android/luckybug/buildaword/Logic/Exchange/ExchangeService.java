@@ -4,34 +4,55 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.Switch;
 
+import com.android.luckybug.buildaword.Logic.Player;
 import com.android.luckybug.buildaword.MainActivity;
 import com.android.luckybug.buildaword.R;
+import com.koushikdutta.async.http.socketio.Acknowledge;
+import com.koushikdutta.async.http.socketio.ConnectCallback;
+import com.koushikdutta.async.http.socketio.DisconnectCallback;
+import com.koushikdutta.async.http.socketio.ErrorCallback;
+import com.koushikdutta.async.http.socketio.EventCallback;
+import com.koushikdutta.async.http.socketio.SocketIOClient;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Random;
+
+import static com.android.luckybug.buildaword.Logic.Exchange.Socket.*;
 
 public class ExchangeService extends Service {
     private NotificationManager nm;
     private static boolean isRunning = false;
 
-    ArrayList<Messenger> mClients = new ArrayList<Messenger>(); // Keeps track of all current registered clients.
+    SharedPreferences mSettings;
 
+    ArrayList<Messenger> mClients = new ArrayList<Messenger>(); // Keeps track of all current registered clients.
+    Socket socket;
 
     public static final int MSG_REGISTER_CLIENT = 1;
     public static final int MSG_UNREGISTER_CLIENT = 2;
-    public static final int MSG_SEND_WORD = 3;
+    public static final int MSG_LOADED = 3;
+    public static final int MSG_PLAYER = 4;
+    public static final int MSG_JOIN_GAME = 5;
 
+    String token = "";
+    public Player player;
 
-    public static final int MSG_RECEIVE_WORD = 4;
-    public static final int MSG_SENT = 5;
+    public static final String APP_PREFERENCES = "mysettings";
+    public static final String APP_PREFERENCE_TOKEN = "token";
 
     final Messenger mMessenger = new Messenger(new IncomingHandler()); // Target we publish for clients to send messages to IncomingHandler.
 
@@ -49,36 +70,22 @@ public class ExchangeService extends Service {
                 case MSG_UNREGISTER_CLIENT:
                     mClients.remove(msg.replyTo);
                     break;
-                case MSG_SEND_WORD:
-                    // TODO sending to server
-
-                    sendMessageToUI(Message.obtain(null, MSG_SENT));
-
+                case MSG_PLAYER:
+                    sendMessageToUI(Message.obtain(null, MSG_PLAYER, player));
+                    break;
+                case MSG_JOIN_GAME:
                     try {
-                        wait(1000);
-                    } catch (Exception e) {
+                        socket.send(Command.JOIN_RANDOM_QUEUE, new JSONObject().put("modePreset", 0));
+
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-                    Random r = new Random();
-
-                    int length = (Math.abs(r.nextInt()) % 3) + 1;
-
-                    String seq = "[";
-
-                    for( int i = 0; i < length; i++ )
-                        seq += (Math.abs(r.nextInt()) % 25 ) + ",";
-
-                    seq += "]";
-
-                    sendMessageToUI(Message.obtain(null, MSG_RECEIVE_WORD, seq));
-
-                    break;
                 default:
                     super.handleMessage(msg);
             }
         }
     }
+
     private void sendMessageToUI(Message msg) {
         for (int i=mClients.size()-1; i>=0; i--) {
             try {
@@ -86,7 +93,6 @@ public class ExchangeService extends Service {
             }
             catch (RemoteException e) {
                 Log.d("service", e.getMessage());
-                // The client is dead. Remove it from the list; we are going through the list from back to front so this is safe to do inside the loop.
                 mClients.remove(i);
             }
         }
@@ -96,16 +102,79 @@ public class ExchangeService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.i("MyService", "Service Started.");
-        showNotification();
+        showNotification(getString(R.string.service_started));
+
+        mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        if (mSettings.contains(APP_PREFERENCE_TOKEN)) {
+            // Получаем число из настроек
+            token = mSettings.getString(APP_PREFERENCE_TOKEN, "");
+        }
+
+        buildSocket();
+
         isRunning = true;
     }
-    private void showNotification() {
+
+    private void buildSocket() {
+        socket = new Socket(token, new Callback() {
+            @Override
+            public void call(Command on, JSONArray msg) {
+                switch(on) {
+                    case LOGOUT:
+                        break;
+                    case SIGN_UP: {
+                        showNotification("Connected");
+                        parseAuthAns(msg);
+                        sendMessageToUI(Message.obtain(null, MSG_LOADED));
+                        Log.d("Service", on.getMsg());
+                        break;
+                    }
+                    case JOIN_RANDOM_QUEUE:{
+
+                        Log.d("Service", "Unknown message");
+
+                        break;
+                    }
+                    case CHECK_WORD:
+                        break;
+                    case AUTH:
+                        break;
+                    case TURN:
+                        break;
+                    case BUY_BONUS:
+                        break;
+                    case SKIP_TURN:
+                        break;
+                    case CHAT_MSG:
+                        break;
+                    case GAME_OVER:
+                        break;
+                    case ADD_WORD_TO_NOTEPAD:
+                        break;
+                    default:
+                        Log.d("Service", "Unknown message");
+                }
+            }
+        });
+    }
+
+    private void parseAuthAns(JSONArray argument) {
+        try {
+            JSONObject ans = argument.getJSONObject(0);
+            player = new Player(ans.getJSONObject("player"));
+            token = ans.getString("token");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showNotification(String text) {
         nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        CharSequence text = getText(R.string.service_started);
         Notification notification = new Notification(R.drawable.ic_launcher, text, System.currentTimeMillis());
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
-        notification.setLatestEventInfo(this, "service", text, contentIntent);
-        nm.notify(R.string.service_started, notification);
+        notification.setLatestEventInfo(this, getString(R.string.app_name), text, contentIntent);
+        nm.notify(0, notification);
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -122,7 +191,15 @@ public class ExchangeService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        nm.cancel(R.string.service_started); // Cancel the persistent notification.
+
+        SharedPreferences.Editor editor = mSettings.edit();
+        editor.putString(APP_PREFERENCE_TOKEN, token);
+        editor.apply();
+
+        socket.logout();
+
+        showNotification("Service Stopped");
+        nm.cancel(0); // Cancel the persistent notification.
         Log.i("MyService", "Service Stopped.");
         isRunning = false;
     }

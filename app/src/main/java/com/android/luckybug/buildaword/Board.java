@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.luckybug.buildaword.Conrtol.Cell.Cell;
-import com.android.luckybug.buildaword.Conrtol.Player;
 import com.android.luckybug.buildaword.Conrtol.Prison;
 import com.android.luckybug.buildaword.Logic.Dictionary;
 import com.android.luckybug.buildaword.Logic.Exchange.ExchangeService;
@@ -32,7 +31,6 @@ public class Board extends FragmentActivity {
 
     private Dictionary dictionary;
     private Prison prison;
-    private Player me, enemy;
 
     private int msPerTurn = 15*1000;
     private Cell.Owner turn = Cell.Owner.me;
@@ -70,7 +68,7 @@ public class Board extends FragmentActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case ExchangeService.MSG_SENT:{
+                /*case ExchangeService.MSG_SENT:{
 
                     turn = Cell.Owner.enemy;
 
@@ -102,7 +100,7 @@ public class Board extends FragmentActivity {
                     timer = new MyCountDownTimer(msPerTurn);
 
                     break;
-                }
+                }*/
                 default:
                     super.handleMessage(msg);
             }
@@ -116,8 +114,8 @@ public class Board extends FragmentActivity {
 
         dictionary = new Dictionary(this);
         prison = new Prison((TableLayout)findViewById(R.id.grid));
-        me = new Player(findViewById(R.id.myStats), 0, 20, 30, 50, new WeakReference<Prison>(prison));
-        enemy = new Player(findViewById(R.id.enemyStats), 0, 20, 30, 50, new WeakReference<Prison>(prison));
+//        me = new Player(findViewById(R.id.myStats), 0, 20, 30, 50, new WeakReference<Prison>(prison));
+//        enemy = new Player(findViewById(R.id.enemyStats), 0, 20, 30, 50, new WeakReference<Prison>(prison));
 
         viewForBuiltWord = (TextView)findViewById(R.id.textLabel);
         clock = (TextView)findViewById(R.id.clock);
@@ -143,7 +141,7 @@ public class Board extends FragmentActivity {
             Toast.makeText(getApplicationContext(), word + "? не слышали", Toast.LENGTH_SHORT).show();
             return;
         }
-        mConnection.sendMessageToService(Message.obtain(null, ExchangeService.MSG_SEND_WORD, word));
+        //mConnection.sendMessageToService(Message.obtain(null, ExchangeService.MSG_SEND_WORD, word));
     }
 
     public void onClickErase(View view) {
@@ -153,6 +151,7 @@ public class Board extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        timer.cancel();
         try {
             mConnection.doUnbindService();
         }

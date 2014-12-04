@@ -3,12 +3,41 @@ package com.android.luckybug.buildaword;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import com.android.luckybug.buildaword.Logic.Exchange.ExchangeService;
+import com.android.luckybug.buildaword.Logic.Exchange.MyServiceConnection;
+import com.android.luckybug.buildaword.Logic.Player;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
+
+    TextView nickView, coinsView;
+
+    private MyServiceConnection mConnection = new MyServiceConnection(this, new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case ExchangeService.MSG_LOADED:
+                    mConnection.sendMessageToService(Message.obtain(null, ExchangeService.MSG_PLAYER));
+                    break;
+                case ExchangeService.MSG_PLAYER:
+                    Player player = (Player)msg.obj;
+
+                    nickView.setText(player.getNick());
+                    coinsView.setText(Integer.toString(player.getCoins()));
+
+                    break;
+                default:
+                    super.handleMessage(msg);
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,8 +47,19 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.classic).setOnClickListener(this);
         findViewById(R.id.arcade).setOnClickListener(this);
         findViewById(R.id.hard).setOnClickListener(this);
+
+        nickView = (TextView)findViewById(R.id.nickNiew);
+        coinsView = (TextView)findViewById(R.id.coinView);
+
+        mConnection.doBindService();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mConnection.doUnbindService();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -50,18 +90,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         switch(id) {
             case R.id.classic: {
-                Intent intent = new Intent(this, Board.class);
-                startActivity(intent);
+
+                mConnection.sendMessageToService(Message.obtain(null, ExchangeService.MSG_JOIN_GAME, 2));
+
+//                Intent intent = new Intent(this, Board.class);
+//                startActivity(intent);
                 break;
             }
             case R.id.arcade: {
-                Intent intent = new Intent(this, Board.class);
-                startActivity(intent);
+//                Intent intent = new Intent(this, Board.class);
+//                startActivity(intent);
                 break;
             }
             case R.id.hard: {
-                Intent intent = new Intent(this, Board.class);
-                startActivity(intent);
+//                Intent intent = new Intent(this, Board.class);
+//                startActivity(intent);
                 break;
             }
         }
